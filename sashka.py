@@ -7,7 +7,9 @@ while n < 3:
 
     if len(user_pin) ==4 or len(user_pin) ==6:
         if initial_pin == user_pin:
-            print('pin is right')
+            
+            amount = input('how much ')
+            print(f'take your {amount}')
             break
         else :
             print('sorry. wrong pin ')
