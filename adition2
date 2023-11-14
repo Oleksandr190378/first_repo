@@ -1,0 +1,70 @@
+import re, shutil, sys
+import os
+def encrypt(obj, key):
+    obj_array = bytearray(obj)
+    for i, b in enumerate(obj_array):
+        n = b +key
+        if n > 255:
+            n -= 255
+        obj_array[i] = n    
+    return bytes(obj_array)    
+
+def decrypt(obj, key):
+    obj_array = bytearray(obj)
+    for i, b in enumerate(obj_array):
+        n = b - key
+        if n < 0:
+            n += 255
+        obj_array[i] = n    
+    return bytes(obj_array)    
+
+
+'''if __name__ == '__main__':
+    pwd = input('Enter your password:  ')
+    pwd_b = pwd.encode()
+    encrypted_pwd = encrypt(pwd_b, 200)
+    with open('password.txt', 'wb') as file:
+        file.write(encrypted_pwd)
+    with open('password.txt', 'rb') as file:    
+        encrypted_pwd = file.read()
+        print(encrypted_pwd)
+    #print(decrypt(encrypted_pwd, 200))  '''  
+
+'''file_name = 'sdk3854.v,=*3gjgj'
+file_name = re.sub('\W', '_', file_name)
+file_name = re.sub('\d', '_', file_name)'''
+
+#t = os.listdir(r'C:\Users\user\Desktop\Greece\archive')
+'''a =r"The other two, slight air, and purging fire, Are both with thee, wherever I abide, The first my thought, the other my desire, These present-absent with swift motion slide. For when these quicker elements are gone In tender embassy of love to thee, My life being made of four, with two alone, Sinks down to death, oppressed with melancholy.Until life's composition be recured, By those swift messengers returned from thee, Who even but now come back again assured, Of thy fair health, recounting it to me. This told, I joy, but then no longer glad, I send them back again and straight grow sad."
+d = a.lower()
+s = d.replace(r'\W', '')
+w =set(s.split())
+a = dict.fromkeys(w,0)
+for word in w:
+    a[word]+=1
+dict2 = {}
+for x,y in a.items():
+    dict2[y] = dict2.get(y,[])+[x]'''
+
+shutil.make_archive(fr'C:\Users\user\Desktop\Greece\dad\aaa\qqr', 'zip', fr'C:\Users\user\Desktop\Greece\dad\aaa\qqr')
+#
+#shutil.unpack_archive(r'C:\Users\user\Desktop\Greece\dad\aaa\qqr.zip', r'C:\Users\user\Desktop\Greece\archive\qqr' )
+#os.remove(r'C:\Users\user\Desktop\Greece\dad\aaa\qqr.zip')
+extensions1 = {
+
+    'video': ['avi', 'mp4', 'mov', 'mkv'],
+
+    'data': ['sql', 'sqlite', 'csv', 'dat', 'xml'],
+
+    'audio': ['mp3', 'ogg', 'wav', 'amr'],
+
+    'image': ['jpeg', 'png', 'jpg', 'svg'],
+
+    'archive': ['zip', 'gz', 'tar'],
+
+    'text': ['doc', 'docx', 'txt', 'pdf', 'xlsx', 'pptx'],
+      'other': ['otf', 'ttf', 'fon', 'fnt', 'exe', 'bat', 'gif']    }
+python_other= ['otf', 'ttf', 'fon', 'fnt', 'exe', 'bat', 'gif'] 
+#os.rename(r'C:\Users\user\Desktop\Greece\dad\vbc\vasya.docx', r'C:\Users\user\Desktop\Greece\dad\wer.docx')
+
+
