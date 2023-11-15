@@ -15,6 +15,7 @@ extensions1 = {
     'archive': ['zip', 'gz', 'tar'],
 
     'text': ['doc', 'docx', 'txt', 'pdf', 'xlsx', 'pptx'],
+    'other': []
          }
 
 
@@ -41,7 +42,6 @@ def get_folder(path, list_folder): # list_folder=[]
             get_folder(path2, list_folder)
     
     return list_folder
-
 
 def get_file(path, list_file): # list_file=[]
     
@@ -89,19 +89,25 @@ def sort_files(dir_path, extensions1):
         file_name = files_list2[-1].split('.')
         file_name2 = file_name[0]
         extension2 = file_name[-1]
+        extension3 = extension2.lower()
         file_name2 = normalize(file_name2)
         
-        if extension2 in extensions1['archive']:
+        if extension3 in extensions1['archive']:
             des_path = os.path.join(dir_path, 'archive', file_name2)
-            shutil.unpack_archive(files, des_path)
-            new_folder['archive'] = new_folder.get('archive', []) + [file_name2]
-            new_extensions.add(extension2)
-            os.remove(files)
+            try:
+                shutil.unpack_archive(files, des_path)
+                new_folder['archive'] = new_folder.get('archive', []) + [file_name2]
+                new_extensions.add(extension2)
+                os.remove(files)
+            except:
+                shutil.move(files, des_path)
+                new_extensions.add(extension2) 
+
             continue
         ind = True
         new_file = file_name2 +  extension
         for dict_key_int in extensions1.keys():
-            if extension2 in extensions1[dict_key_int]:
+            if extension3 in extensions1[dict_key_int]:
                 new_folder[dict_key_int] = new_folder.get(dict_key_int, []) + [new_file]
                 des_path2 = os.path.join(dir_path, dict_key_int, new_file)
                 shutil.move(files, des_path2)
@@ -112,7 +118,8 @@ def sort_files(dir_path, extensions1):
         
         if ind == True:
              
-            shutil.move(files, os.path.join(dir_path, new_file))
+            shutil.move(files, os.path.join(dir_path, 'other',  new_file))
+            new_folder['other'] = new_folder.get('other', []) + [new_file]
             ext_unfound.add(extension2)
             
                 
@@ -139,7 +146,7 @@ if __name__ == '__main__':
         else:
             print(f'{main_path} is not a folder')
     else:
-        print(f'Input a folder')        
+        print(f'Input a folder')      
     
     
     
