@@ -22,49 +22,36 @@ extensions1 = {
 def directory_from_list(dir_path, dir_names): #extensions
     list_new_dir = []
     for folder in dir_names:
-        if not os.path.exists(f'{dir_path}\\{folder}'):
-            os.mkdir(f'{dir_path}\\{folder}')
-        list_new_dir.append(f'{dir_path}\\{folder}')
+        d = os.path.join(dir_path, folder)
+        if not os.path.exists(d):
+            os.mkdir(d)
+        list_new_dir.append(d)
     return list_new_dir
 
-def get_file2(path, list_file): 
-    for root, dirs, files in os.walk(path):
-        
-        list_file.append(files)  
-    
-    return list_file        
     
 def get_folder(path, list_folder): # list_folder=[]
-    for entry in os.scandir(path):  
-        if not entry.is_dir(): 
+    
+    for entry in os.listdir(path):  
+        entry1 = os.path.join(path, entry)
+        if not os.path.isdir(entry1):
             continue   
         else :
-            t  = str(entry)
-            t = t.removeprefix("<DirEntry \'")
-            t = t.removesuffix("\'>")
-            t.strip()            
-            path2 = fr'{path}\{t}'  
-            list_folder.append(path2) 
+            list_folder.append(entry1)    
+            path2 = os.path.join(path, entry) 
             get_folder(path2, list_folder)
     
     return list_folder
 
 
 def get_file(path, list_file): # list_file=[]
-    for entry in os.scandir(path):  
-        if not entry.is_dir(): 
-            t  = str(entry)
-            t = t.removeprefix("<DirEntry \'")
-            t = t.removesuffix("\'>")
-            t = path + '\\' + t
-            list_file.append(t)    
-        else :
-            t  = str(entry)
-            t = t.removeprefix("<DirEntry \'")
-            t = t.removesuffix("\'>")
-            t.strip()
+    
+    for entry in os.listdir(path):  
+        entry1 = os.path.join(path, entry)
+        if not os.path.isdir(entry1): 
             
-            path2 = fr'{path}\{t}'   
+            list_file.append(entry1)    
+        else :
+            path2 = os.path.join(path, entry)              
             get_file(path2, list_file)
     
     return list_file
@@ -92,39 +79,41 @@ def sort_files(dir_path, extensions1):
     new_folder = {} 
     new_extensions = set()
     ext_unfound = set()
-    ext_list = list(extensions1.items())
     
     list_new_dir = directory_from_list(dir_path, extensions1)
     for files in file_list:
-        files2 = files.rsplit('.', 1)
-        extension = files2[-1]
-        file_name = files2[0]
-        file_name2 = file_name.rsplit('\\', 1)
-        file_name2 =file_name2[-1]
+        files_list = os.path.splitext(files)
+        files_list2 = os.path.split(files)
+        extension = files_list[-1]
+        
+        file_name = files_list2[-1].split('.')
+        file_name2 = file_name[0]
+        extension2 = file_name[-1]
         file_name2 = normalize(file_name2)
         
-        if extension in extensions1['archive']:
-            shutil.unpack_archive(files, fr'{dir_path}\\archive\\{file_name2}')
+        if extension2 in extensions1['archive']:
+            des_path = os.path.join(dir_path, 'archive', file_name2)
+            shutil.unpack_archive(files, des_path)
             new_folder['archive'] = new_folder.get('archive', []) + [file_name2]
-            new_extensions.add(extension)
+            new_extensions.add(extension2)
             os.remove(files)
             continue
         ind = True
-        new_file = file_name2 + '.' + extension
-        
-        for dict_key_int in range(len(ext_list)):
-            
-            if extension in ext_list[dict_key_int][1]:
-                key1 = ext_list[dict_key_int][0]
-                new_folder[key1]= new_folder.get(key1, []) + [new_file] #= new_folder[key1] + [new_file]
-                shutil.move(files, fr'{dir_path}\\{ext_list[dict_key_int][0]}\\{new_file}')
-                new_extensions.add(extension) 
+        new_file = file_name2 +  extension
+        for dict_key_int in extensions1.keys():
+            if extension2 in extensions1[dict_key_int]:
+                new_folder[dict_key_int] = new_folder.get(dict_key_int, []) + [new_file]
+                des_path2 = os.path.join(dir_path, dict_key_int, new_file)
+                shutil.move(files, des_path2)
+                new_extensions.add(extension2) 
                 ind = False
                 break 
+
+        
         if ind == True:
              
-            shutil.move(files, fr'{dir_path}\\{new_file}')
-            ext_unfound.add(extension)
+            shutil.move(files, os.path.join(dir_path, new_file))
+            ext_unfound.add(extension2)
             
                 
     
@@ -135,12 +124,11 @@ def sort_files(dir_path, extensions1):
        if  os.listdir(p) == []: 
             os.rmdir(p)   
     
-    print(new_folder)
-    print(new_extensions)
-    print(ext_unfound)
+    print(f'Список файлів: {new_folder}')
+    print(f'Відомі розширення: {new_extensions}')
+    print(f'Невідомі розширення: {ext_unfound}')
     return new_folder , new_extensions, ext_unfound
 
-#sort_files(main_path2, extensions1)
 
 if __name__ == '__main__':
     

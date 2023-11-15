@@ -1,5 +1,6 @@
 import re, shutil, sys
 import os
+from pathlib import Path
 def encrypt(obj, key):
     obj_array = bytearray(obj)
     for i, b in enumerate(obj_array):
@@ -46,7 +47,7 @@ dict2 = {}
 for x,y in a.items():
     dict2[y] = dict2.get(y,[])+[x]'''
 
-shutil.make_archive(fr'C:\Users\user\Desktop\Greece\dad\aaa\qqr', 'zip', fr'C:\Users\user\Desktop\Greece\dad\aaa\qqr')
+shutil.make_archive(fr'C:\Users\user\Desktop\Greece\dad\qqq\vvv', 'zip', fr'C:\Users\user\Desktop\Greece\dad\qqq\vvv')
 #
 #shutil.unpack_archive(r'C:\Users\user\Desktop\Greece\dad\aaa\qqr.zip', r'C:\Users\user\Desktop\Greece\archive\qqr' )
 #os.remove(r'C:\Users\user\Desktop\Greece\dad\aaa\qqr.zip')
@@ -67,4 +68,4 @@ extensions1 = {
 python_other= ['otf', 'ttf', 'fon', 'fnt', 'exe', 'bat', 'gif'] 
 #os.rename(r'C:\Users\user\Desktop\Greece\dad\vbc\vasya.docx', r'C:\Users\user\Desktop\Greece\dad\wer.docx')
 
-
+r =os.path.join(r'C:\Users\user\Desktop\Greece\dad' , 'archive', 'calcul.py')
