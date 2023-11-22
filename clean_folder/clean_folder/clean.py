@@ -137,19 +137,19 @@ def sort_files(dir_path, extensions1):
     return new_folder , new_extensions, ext_unfound
 
 def main():
-    sort_files(sys.argv[1], extensions1)
-
-if __name__ == '__main__':
-    
     if len(sys.argv) ==2:
         main_path =fr'{sys.argv[1]}'        
         if os.path.isdir(main_path):
-            main()
+            sort_files(main_path, extensions1)
             
         else:
             print(f'{main_path} is not a folder')
     else:
-        print(f'Input a folder')      
+        print('Input a folder')      
     
+
+if __name__ == '__main__':
+    
+    main()
     
     
