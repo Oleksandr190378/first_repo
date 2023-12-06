@@ -4,46 +4,64 @@ phone_dic = {}
 
 def inner():
     st = input('Enter the command: ')
-    res = st.split()+ [' '] + [' ']
+    res = st.split() + [' '] + [' ']
     return res
-
-def decorator(func):
-    def wrapper_decorator(el):
-        if el.isalpha():
-            return func(el)
-        else:
-            print('TypeError')        
-    return wrapper_decorator   
-
-@decorator    
-def phone(el:str):
-    if el in phone_dic:
-        print(f'the {el} has a {phone_dic[el]} number')
-    else:
-        print('The contact is not in the dictionary')      
 
 def hello():
     print('How can I help you?')
 
-def Error_Handler(func):
-    def Inner_Function(el1, el2):
-        if el1.isalpha() and el2.isdecimal():
-            print('Done')
-            return func(el1,el2)
-        else:
-            print(" wrong data types")
+def Input_Error(func):
+    def Inner_Function(*el):
+        try:  
+            try:
+                return func(*el)
+            except ValueError:
+                print('Please enter a valid name or number!') 
+            except TypeError: 
+                print('The contact  is not in the dictionary') 
+        except IndexError:     
+            print('Enter data after the command')              
     return Inner_Function
 
-@Error_Handler
+@Input_Error
 def add(el1, el2):
-    phone_dic.update({el1:el2})   
-@Error_Handler
-def change(el1, el2):
-    if el1 in phone_dic:
-        phone_dic[el1] = el2
+    if el1 == ' ' or el2 == ' ':
+        raise IndexError()
+    if el1.isalpha():
+        if el2.isnumeric():
+            phone_dic.update({el1:el2})
+        else:    
+            raise ValueError()
     else:
-        print('The contact is not the dictionary')    
+        raise ValueError()       
 
+@Input_Error
+def change(el1, el2):
+    if el1 == ' ' or el2 == ' ':
+        raise IndexError()
+    if el1.isalpha():
+        if el2.isnumeric():
+            if el1 in phone_dic:
+                phone_dic[el1] = el2 
+            else:
+                raise TypeError()    
+        else:    
+            raise ValueError()
+    else:
+        raise ValueError()  
+
+@Input_Error
+def phone(el:str):
+    if el == ' ':
+        raise IndexError()
+    if el.isalpha():
+        if el in phone_dic:
+            print(f'the {el} has a {phone_dic[el]} number')
+        else:
+            raise TypeError()    
+    else:
+        raise ValueError()
+    
 def show():
     print(phone_dic) 
 
@@ -59,7 +77,7 @@ def good_bye(x:str, y:str):
 
 def do_work():
     args = sys.argv
-    args = args[1:] + [' '] + [' ']# First element of args is the file name
+    args = args[1:] + [' '] + [' '] # First element of args is the file name
     ind = True
     while ind:
         if len(args) == 2:
@@ -89,7 +107,8 @@ def do_work():
                         y = entry(args[a])
                         y(args[a+1], args[a+2])     
                         args = inner()
-                        break   
+                        break
+                        
             if g:    
                 print('Unrecognized command')
                 args = inner()
@@ -98,6 +117,14 @@ if __name__ == '__main__':
     do_work()
 
 
+
+   
+
+
+
+
+    
+    
 
     
     
