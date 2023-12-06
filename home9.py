@@ -26,41 +26,41 @@ def Input_Error(func):
 @Input_Error
 def add(el1, el2):
     if el1 == ' ' or el2 == ' ':
-        raise IndexError()
+        raise IndexError
     if el1.isalpha():
         if el2.isnumeric():
             phone_dic.update({el1:el2})
         else:    
-            raise ValueError()
+            raise ValueError
     else:
-        raise ValueError()       
+        raise ValueError       
 
 @Input_Error
 def change(el1, el2):
     if el1 == ' ' or el2 == ' ':
-        raise IndexError()
+        raise IndexError
     if el1.isalpha():
         if el2.isnumeric():
             if el1 in phone_dic:
                 phone_dic[el1] = el2 
             else:
-                raise TypeError()    
+                raise TypeError   
         else:    
-            raise ValueError()
+            raise ValueError
     else:
-        raise ValueError()  
+        raise ValueError
 
 @Input_Error
 def phone(el:str):
     if el == ' ':
-        raise IndexError()
+        raise IndexError
     if el.isalpha():
         if el in phone_dic:
             print(f'the {el} has a {phone_dic[el]} number')
         else:
-            raise TypeError()    
+            raise TypeError   
     else:
-        raise ValueError()
+        raise ValueError
     
 def show():
     print(phone_dic) 
