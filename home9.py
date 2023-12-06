@@ -2,11 +2,6 @@ import sys
 
 phone_dic = {}
 
-def inner():
-    st = input('Enter the command: ')
-    res = st.split() + [' '] + [' ']
-    return res
-
 def Input_Error(func):
     def Inner_Function(*el):
         try:
@@ -76,14 +71,12 @@ def do_work():
     while ind:
         if len(args) == 2:
             print('You have not passed any commands in!')
-            args = inner()
         else:
             g = True
             for a in range(len(args)):
                 args[a] = args[a].lower()
                 if args[a] == 'hello':
                     print('How can I help you?')
-                    args = inner()
                     g = False
                     break
                 if args[a] == 'good':
@@ -93,24 +86,24 @@ def do_work():
                     if args[a] == 'show':
                         y = entry(args[a])
                         print(y())
-                        args = inner()
                         break
                     elif args[a] in ['good bye', 'exit','close']:
-                        ind = False        
+                        ind = False 
+                        break       
                     elif args[a] == 'phone':
                         y = entry(args[a])    
-                        print(y(args[a+1]))
-                        args = inner() 
+                        print(y(args[a+1])) 
                         break   
                     elif args[a] in ['add', 'change']:
                         y = entry(args[a])   
                         print(y(args[a+1], args[a+2]))
-                        args = inner()
                         break                     
             if g:    
                 print('Unrecognized command')
-                args = inner()
-               
+        if ind:
+            st = input('Enter the command: ')
+            args = st.split() + [' '] + [' ']       
+
 if __name__ == '__main__':
     do_work()
 
