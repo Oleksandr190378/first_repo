@@ -1,6 +1,7 @@
 from collections import UserDict
 
 class Field:
+    
     def __init__(self, value):
         self.value = value
 
@@ -13,6 +14,7 @@ class Name(Field):
 
 
 class Phone(Field):
+    
     def __init__(self, value):
         self.value = self.valid_phone(value)
     
@@ -27,6 +29,7 @@ class Phone(Field):
 
 
 class Record:
+    
     def __init__(self, name):
         self.name = Name(name)
         self.phones = []
@@ -39,8 +42,6 @@ class Record:
     def remove_phone(self, phone):
         if phone in self.phones:
             self.phones.remove(phone)    
-        else:
-            print(f'phone {phone} is not in a list')
     
     def edit_phone(self, phone, new_phone): 
         Phone(new_phone)
@@ -48,10 +49,9 @@ class Record:
             ind = self.phones.index(phone)
             self.phones.insert(ind, new_phone)
             self.phones.remove(phone)
-            
         else:
             raise ValueError    
-
+    
     def find_phone(self, phone):
         if self.phones == []:
             return None
@@ -82,13 +82,12 @@ class AddressBook(UserDict):
         if contact in self.data:
             return self.data[contact] 
         else:
-            print(f'Contact {contact} is not in address book')
+            return None
         
     def delete(self, name):
         if name in self.data:
             self.data.pop(name)
         else:
-            print(f'Contact {name} is not in address book')  
-
+            return None
 
 
