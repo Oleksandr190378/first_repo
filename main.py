@@ -1,4 +1,6 @@
 from collections import UserDict
+from datetime import datetime, date, timedelta
+
 
 class Field:
     
@@ -16,17 +18,38 @@ class Name(Field):
 class Phone(Field):
     
     def __init__(self, value):
-        self.value = self.valid_phone(value)
+        self._value = None
+        self.value = value
     
-    def valid_phone(self, value):
-        if value.isnumeric():
-            if len(value) == 10:
-                return value
-            else:
-                raise ValueError
+    @property
+    def value(self):
+        return self._value
+    
+    @value.setter
+    def value(self, value):
+        if value.isnumeric() and len(value) == 10:
+            self._value = value  
         else:
             raise ValueError
 
+
+class Birthday:
+    
+    def __init__(self, date):
+        self._date = None
+        self.date = date
+        
+    @property
+    def date(self):
+        return self._date
+
+    @date.setter
+    def date(self, date):
+        if  datetime.strptime(date, r"%d-%m-%Y"):
+            self._date = date
+        else:  
+            raise ValueError      
+       
 
 class Record:
     
@@ -61,11 +84,34 @@ class Record:
             else:
                 return None
     
+    def days_to_birthday(self, birthday):
+        t_date = date.today()
+        birth = (datetime.strptime(birthday.date, r"%d-%m-%Y")).date()
+        birth = birth.replace(year = t_date.year)
+        if t_date <  birth:
+            quantity = birth - t_date
+        else:
+            birth = birth.replace(year = t_date.year+1)
+            quantity = birth - t_date
+        return quantity.days
+
     def get_phones(self):
         return self.phones
     
     def __str__(self):
         return f"Contact name: {self.name.value}, phones: {'; '.join(p.value for p in self.phones)}"    
+
+
+class Iterable:
+   
+    def __init__(self, max_points):
+        self.current_point = 0
+        self.max_points = max_points
+
+    def __next__(self):
+        if self.current_point < self.max_points:
+            self.current_point +=1
+            return    
 
 
 class AddressBook(UserDict):
@@ -89,5 +135,11 @@ class AddressBook(UserDict):
             self.data.pop(name)
         else:
             return None
+        
+    def iterator(self, N):
+            list1 = list(self.data.items())
+            for el in list1[:N]:
+                yield  el
+
 
 
