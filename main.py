@@ -1,6 +1,6 @@
 from collections import UserDict
 from datetime import datetime, date, timedelta
-
+import pickle
 
 class Field:
     
@@ -106,8 +106,7 @@ class AddressBook(UserDict):
 
     def add_record(self, record):
         contact = record.name.value
-        self.data[contact] = record
-        
+        self.data[contact] = record   
       
     def find(self, contact):
         if contact in self.data:
@@ -124,5 +123,34 @@ class AddressBook(UserDict):
     def iterator(self, N):
             list1 = list(self.data.items())
             yield list1[:N]
+
+    def save_contacts_to_file(self,filename):
+        with open(filename, "wb") as fh:
+            pickle.dump(self, fh) 
+            
+    def read_contacts_from_file(filename):
+        with open(filename, "rb") as fh:
+            unpacked = pickle.load(fh)
+        return unpacked
+    
+    def find_inf(self, inf: str):
+        output = []
+        if inf.isalpha():
+            for key, el in self.data.items():
+                x = key.value
+                if x.find(inf) != -1:
+                    output.append(str(el))
+        elif inf.isdigit():
+            for key, el in self.data.items():
+                for tel in el.phones:
+                    x = tel.value
+                    if x.find(inf) != -1:
+                        output.append(str(el))
+                        break   
+        else:
+            raise Exception("Sorry, incorrect input")                  
+        if len(output) == 0:
+            return 'There are no contacts with such input'
+        return output
 
 
