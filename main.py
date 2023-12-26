@@ -131,8 +131,9 @@ class AddressBook(UserDict):
             return None
         
     def iterator(self, N):
-            list1 = list(self.data.items())
-            yield list1[:N]
+            list1 = list(self.data.values())
+            for i in range(0, len(list1), N):
+                yield list1[i:i+N]
 
     def save_contacts_to_file(self,filename):
         with open(filename, "wb") as fh:
