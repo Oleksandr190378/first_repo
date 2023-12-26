@@ -1,6 +1,7 @@
 from collections import UserDict
 from datetime import datetime, date, timedelta
 import pickle
+from pathlib import Path
 
 class Field:
     
@@ -26,7 +27,13 @@ class Field:
 
 
 class Name(Field):
-    pass
+    
+    def is_valid(self, value):
+        if value.isalpha() :
+            self._value = value
+            return True  
+        else:
+            raise ValueError
 
 
 class Phone(Field):
@@ -72,9 +79,9 @@ class Record:
                 ind = self.phones.index(tel)
                 self.phones.insert(ind, new_phone)
                 self.phones.remove(tel)
-                break
-            else:
-                raise ValueError    
+                return
+        print('there is not the number in the book ')    
+        raise ValueError    
     
     def find_phone(self, phone):
         for tel in self.phones:
@@ -102,10 +109,13 @@ class Record:
 class AddressBook(UserDict):
     
     def list_contacts(self):
-        return list(self.data.keys())
+        output = []
+        for el in self.data.values():
+            output.append(str(el))
+        return output
 
     def add_record(self, record):
-        contact = record.name.value
+        contact = record.name
         self.data[contact] = record   
       
     def find(self, contact):
@@ -154,3 +164,98 @@ class AddressBook(UserDict):
         return output
 
 
+def input_error(func):
+    def inner_Function(contact_book, data):
+        if data.startswith('good bye') or data.startswith('show all'):
+            func_arg = ''
+        else:
+            func_arg = data.strip().split(' ')[1:]
+    
+        try:
+            res = func(contact_book, *func_arg) 
+        except:
+            print("incorrect arguments")
+            res = None
+        return res    
+    return inner_Function
+
+
+@input_error
+def add(contact_book, name, phone):
+    for el in contact_book.data.values():
+        if name == el.name.value:
+            el.add_phone(phone)
+            return 'added'
+    new_contact = Record(name)
+    contact_book.add_record(new_contact)
+    contact_book[new_contact.name].add_phone(phone)
+    print(str(new_contact))
+    return 'created'
+    
+
+@input_error
+def change(contact_book, phone, new_phone):
+    for phone_contact_book in contact_book.data.values():
+        for tel in phone_contact_book.phones:
+            if phone == tel.value:
+                phone_contact_book.edit_phone(phone, new_phone)
+                return 'changed'
+    return 'there is not such number in the contact_book '       
+
+
+@input_error
+def show(contact_book):
+    return contact_book.list_contacts()
+
+
+@input_error
+def phone(contact_book, phone):
+    return contact_book.find_inf(phone)
+
+
+@input_error
+def close(contact_book):
+    contact_book.save_contacts_to_file('storage.bin')
+    return 'close'
+
+
+@input_error
+def hello(contact_book):
+    return 'Hello! How can I help you?'
+
+
+action = {'hello': hello, 'add': add, 'change': change, 'phone': phone, 'show all': show,
+             'good bye': close, 'exit': close, 'close': close}
+
+
+def choice(data: str):
+    for command in action:
+        if data.startswith(command):
+            return action[command]
+    return 'Give a command, please'    
+
+
+def start():
+    if Path('storage.bin').is_file():
+        return AddressBook.read_contacts_from_file('storage.bin')
+    else:
+        return AddressBook()
+
+
+def do_work():
+    start()
+    contact_book = start()
+    while True:
+        data = input('Enter command  ')
+        command = choice(data)
+        if isinstance(command, str):
+            print(command)
+            continue
+        result = command(contact_book, data)
+        print(result)
+        if result == 'close':
+            break
+
+
+if __name__ == '__main__':
+    do_work()
