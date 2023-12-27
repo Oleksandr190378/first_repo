@@ -6,20 +6,25 @@ from pathlib import Path
 class Field:
     
     def __init__(self, value):
-        self._value = None
-        self.value = value
+        if not self.is_valid(value):
+            raise ValueError
+        self.__value = value
 
-    @property
-    def value(self):
-        return self._value
-    
+
     def is_valid(self, value):
         return True
 
+
+    @property
+    def value(self):
+        return self.__value
+    
+
     @value.setter
     def value(self, value):
-        if self.is_valid(value):
-            self._value = value
+        if not self.is_valid(value):
+            raise ValueError('incorrect value')
+        self.__value = value
     
 
     def __str__(self):
@@ -30,30 +35,27 @@ class Name(Field):
     
     def is_valid(self, value):
         if value.isalpha() :
-            self._value = value
             return True  
         else:
-            raise ValueError
+            return False
 
 
 class Phone(Field):
     
     def is_valid(self, value):
         if value.isnumeric() and len(value) == 10:
-            self._value = value
             return True  
         else:
-            raise ValueError
+            return False
 
 
 class Birthday(Field):
     
     def is_valid(self, value):
         if  datetime.strptime(value, r"%d-%m-%Y"):
-            self._date = value
             return True
         else:  
-            raise ValueError      
+            return False   
        
 
 class Record:
@@ -167,10 +169,10 @@ class AddressBook(UserDict):
 
 def input_error(func):
     def inner_Function(contact_book, data):
-        if data.startswith('good bye') or data.startswith('show all'):
+        if data == '':
             func_arg = ''
         else:
-            func_arg = data.strip().split(' ')[1:]
+            func_arg = data.strip().split(' ')
     
         try:
             res = func(contact_book, *func_arg) 
@@ -192,7 +194,14 @@ def add(contact_book, name, phone):
     contact_book[new_contact.name].add_phone(phone)
     print(str(new_contact))
     return 'created'
-    
+
+
+@input_error
+def phone(contact_book, phone):
+    if phone.isdigit():
+        return contact_book.find_inf(phone)
+    else:
+        return None
 
 @input_error
 def change(contact_book, phone, new_phone):
@@ -210,8 +219,8 @@ def show(contact_book):
 
 
 @input_error
-def phone(contact_book, phone):
-    return contact_book.find_inf(phone)
+def find_list(contact_book, inf):
+    return contact_book.find_inf(inf)
 
 
 @input_error
@@ -226,14 +235,17 @@ def hello(contact_book):
 
 
 action = {'hello': hello, 'add': add, 'change': change, 'phone': phone, 'show all': show,
-             'good bye': close, 'exit': close, 'close': close}
+             'good bye': close, 'exit': close, 'close': close, 'find': find_list}
 
 
 def choice(data: str):
     for command in action:
         if data.startswith(command):
-            return action[command]
-    return 'Give a command, please'    
+            line = data.removeprefix(command)
+            return action[command], line
+        else:
+            continue
+    return 'Give a command, please'  , ''  
 
 
 def start():
@@ -248,11 +260,11 @@ def do_work():
     contact_book = start()
     while True:
         data = input('Enter command  ')
-        command = choice(data)
+        command, line = choice(data)
         if isinstance(command, str):
             print(command)
             continue
-        result = command(contact_book, data)
+        result = command(contact_book, line)
         print(result)
         if result == 'close':
             break
@@ -260,3 +272,4 @@ def do_work():
 
 if __name__ == '__main__':
     do_work()
+    
