@@ -8,7 +8,7 @@ class Field:
     def __init__(self, value):
         if not self.is_valid(value):
             raise ValueError
-        self.__value = value
+        self._value = value
 
 
     def is_valid(self, value):
@@ -17,14 +17,14 @@ class Field:
 
     @property
     def value(self):
-        return self.__value
+        return self._value
     
 
     @value.setter
     def value(self, value):
         if not self.is_valid(value):
             raise ValueError('incorrect value')
-        self.__value = value
+        self._value = value
     
 
     def __str__(self):
@@ -272,4 +272,3 @@ def do_work():
 
 if __name__ == '__main__':
     do_work()
-    
