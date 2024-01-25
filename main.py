@@ -2,8 +2,15 @@ from collections import UserDict
 from datetime import datetime, date, timedelta
 import pickle
 from pathlib import Path
+from abc import ABC, abstractmethod
 
-class Field:
+
+class Basic(ABC):
+    @abstractmethod
+    def is_valid(self, value):
+        pass
+
+class Field(Basic):
     
     def __init__(self, value):
         if not self.is_valid(value):
@@ -58,23 +65,40 @@ class Birthday(Field):
             return False   
        
 
-class Record:
+class BasicRecord(ABC):
+    @abstractmethod
+    def add(self, value):
+        pass
+
+    @abstractmethod
+    def remove(self, value):
+        pass
     
+    @abstractmethod
+    def edit(self, value, new_value):
+        pass
+
+    @abstractmethod
+    def find(self, value):
+        pass
+
+
+class Record(BasicRecord):
     def __init__(self, name):
         self.name = Name(name)
         self.phones = []
 
-    def add_phone(self, phone):
+    def add(self, phone):
         phone = Phone(phone)
         self.phones.append(phone) 
         return self.phones    
     
-    def remove_phone(self, phone):
+    def remove(self, phone):
         for tel in self.phones:
             if tel.value == phone:
                 self.phones.remove(tel)    
     
-    def edit_phone(self, phone, new_phone): 
+    def edit(self, phone, new_phone): 
         for tel in self.phones:
             if tel.value == phone:
                 new_phone = Phone(new_phone)
@@ -85,7 +109,7 @@ class Record:
         print('there is not the number in the book ')    
         raise ValueError    
     
-    def find_phone(self, phone):
+    def find(self, phone):
         for tel in self.phones:
             if tel.value == phone:
                 return tel
@@ -187,11 +211,11 @@ def input_error(func):
 def add(contact_book, name, phone):
     for el in contact_book.data.values():
         if name == el.name.value:
-            el.add_phone(phone)
+            el.add(phone)
             return 'added'
     new_contact = Record(name)
     contact_book.add_record(new_contact)
-    contact_book[new_contact.name].add_phone(phone)
+    contact_book[new_contact.name].add(phone)
     print(str(new_contact))
     return 'created'
 
@@ -208,7 +232,7 @@ def change(contact_book, phone, new_phone):
     for phone_contact_book in contact_book.data.values():
         for tel in phone_contact_book.phones:
             if phone == tel.value:
-                phone_contact_book.edit_phone(phone, new_phone)
+                phone_contact_book.edit(phone, new_phone)
                 return 'changed'
     return 'there is not such number in the contact_book '       
 
@@ -239,12 +263,16 @@ action = {'hello': hello, 'add': add, 'change': change, 'phone': phone, 'show al
 
 
 def choice(data: str):
+    i = False
     for command in action:
         if data.startswith(command):
             line = data.removeprefix(command)
+            i = True
             return action[command], line
         else:
             continue
+    if not i:
+        print('Sorry, there is not such command')
     return 'Give a command, please'  , ''  
 
 
