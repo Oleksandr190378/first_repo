@@ -46,6 +46,8 @@ def scrape_site(base_url):
 
         for quote, tag in zip(quotes, tags):
             quote_text = quote.find('span', class_='text').text.strip()
+            quote_text = quote_text.removeprefix('\u201c')
+            quote_text = quote_text.removesuffix('\u201d')
             tagsforquotes = tag.find_all('a', class_='tag')
             tag2 = []
             for tagforquote in tagsforquotes:
@@ -53,7 +55,7 @@ def scrape_site(base_url):
             author_url = quote.find('small', class_='author').find_next_sibling('a')['href']
             author_info = get_author_info(base_url, author_url)
             authors_data.append(author_info)
-            quotes_data.append({'text': quote_text, 'author': author_info['fullname'], 'tags': tag2})
+            quotes_data.append({'quote': quote_text, 'author': author_info['fullname'], 'tags': tag2})
 
         page += 1
 
