@@ -27,8 +27,8 @@ def get_author_info(base_url, author_url):
 
 
 def save_to_json(data, filename):
-    with open(filename, 'w') as f:
-        json.dump(data, f, indent=4)
+    with open(filename, 'w', encoding='utf-8') as f:
+        json.dump(data, f, ensure_ascii=False, indent=4)
 
 
 def scrape_site(base_url):
@@ -54,7 +54,8 @@ def scrape_site(base_url):
                 tag2.append(tagforquote.text)
             author_url = quote.find('small', class_='author').find_next_sibling('a')['href']
             author_info = get_author_info(base_url, author_url)
-            authors_data.append(author_info)
+            if author_info not in authors_data:
+                authors_data.append(author_info)
             quotes_data.append({'quote': quote_text, 'author': author_info['fullname'], 'tags': tag2})
 
         page += 1
