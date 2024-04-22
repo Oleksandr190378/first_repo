@@ -3,7 +3,7 @@ from bson.objectid import ObjectId
 from pymongo import MongoClient
 
 
-client = MongoClient("mongodb+srv://user8:567234@oleksandr.1c2z3g9.mongodb.net/?retryWrites=true&w=majority&appName=Oleksandr")
+client = MongoClient("mongodb+srv://user8:123456python@oleksandr.1c2z3g9.mongodb.net/?retryWrites=true&w=majority&appName=Oleksandr")
 db = client.homework
 
 with open("quotes.json", 'r', encoding='utf-8') as fd:

@@ -30,6 +30,9 @@
         <button type="reset" class="btn btn-info col-1 mr-auto my-5 ml-3 bg-warning" style="height: 40px;">Reset</button>
         <a href="{% url 'quotes:root' %}" class="btn btn-info col-1 mr-auto my-5 ml-3 bg-primary" style="height: 40px;" >Return</a>
     </div>
+    <div class="small text-center">
+        <a href="{% url "users:password_reset" %}" class="text-center"><i>Forgot Password?</i></a>
+    </div>
 </form>
 
 {% endblock %}

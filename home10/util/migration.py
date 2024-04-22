@@ -9,7 +9,7 @@ django.setup()
 from quotes.models import Quote, Tag, Author  # noqa
 
 
-client = MongoClient("mongodb+srv://user8:567234@oleksandr.1c2z3g9.mongodb.net/?retryWrites=true&w=majority&appName=Oleksandr")
+client = MongoClient("mongodb+srv://user8:123456python@oleksandr.1c2z3g9.mongodb.net/?retryWrites=true&w=majority&appName=Oleksandr")
 db = client.homework
 
 authors = db.authors.find()
@@ -17,9 +17,9 @@ authors = db.authors.find()
 for author in authors:
     Author.objects.get_or_create(
         fullname=author['fullname'],
-        born_date = author['born_date'],
-        born_location = author['born_location'],
-        description = author['description']
+        born_date=author['born_date'],
+        born_location=author['born_location'],
+        description=author['description']
     )
 
 quotes = db.quotes.find()
